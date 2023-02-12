@@ -1,27 +1,29 @@
-import React from 'react'
+import React, {useContext, useEffect} from 'react'
 import { Chart as ChartJS, Tooltip, Legend, BarElement, CategoryScale, LinearScale } from "chart.js";
 import { Bar } from "react-chartjs-2";
+import { TransactionContext } from "../context/TransactionContext";
 
 ChartJS.register(CategoryScale, LinearScale, Tooltip, Legend, BarElement);
 
 export const LiveStats = () => {
+    const { upPool, downPool } = useContext(TransactionContext);
     const chartData = {
         labels: ['UP', 'DOWN'],
         datasets: [
           {
             label: 'UP',
-            data: [3],
-            borderColor: 'aqua',
-            backgroundColor: 'greenyellow',
+            data: [upPool], // 10
+            borderColor: '#33185c',
+            backgroundColor: '#33185c',
             borderWidth: 2,
             borderRadius: 5,
             borderSkipped: false,
           },
           {
             label: 'DOWN',
-            data: [10],
-            borderColor: 'aqua',
-            backgroundColor: 'lightred',
+            data: [downPool], // 6
+            borderColor: '#543c78',
+            backgroundColor: '#543c78',
             borderWidth: 2,
             borderRadius: 5,
             borderSkipped: false,
@@ -40,6 +42,11 @@ export const LiveStats = () => {
           }
         }
       }
+    
+    useEffect(() => {
+      chartData.datasets[0].data[0] = upPool
+      chartData.datasets[1].data[0] = downPool
+    }, []);
 
     return (
         <div className='bettingParent'>
