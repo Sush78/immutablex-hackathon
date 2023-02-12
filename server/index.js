@@ -299,6 +299,20 @@ const calculatePayout = (_bet, _totalPoolAmount, _winPoolSize, _losePoolSize) =>
   return (_bet + (betRatio*1*_losePoolSize))
 };
 
+const updateMetadataResult = async (_betId, _bet_direction, _amountIn, _result, _payAmount) => {
+  const betResult = _bet_direction==_result ? "win" : "loss"
+  const UpdatedMetaData = {
+    "betId": _betId,
+    "betDirection": _bet_direction,
+    "amountIn": _amountIn,
+    "result": betResult,
+    "amountOut": Number(_payAmount)
+  };
+  console.log(UpdatedMetaData)
+  const url = `${baseURL}/update/${_betId}`;
+  await axios.post(url, UpdatedMetaData);
+}
+
 const payoutBet = async (_betResult) => {
   const betCount = await contract.betCount()
   const totalPoolAmount = ethers.formatEther(await contract.getBalance());
@@ -312,21 +326,30 @@ const payoutBet = async (_betResult) => {
     // If win 
     if (bet_direction == _betResult) {
       //append to win map
-      winPoolMap.set(i, [bettor, Number(ethers.formatEther(amountIn))]);
+      winPoolMap.set(i, [bettor, Number(ethers.formatEther(amountIn)), Number(bet_direction)]);
       winPoolSize = winPoolSize + Number(ethers.formatEther(amountIn));
     } else {
-      losePoolMap.set(i, [bettor, Number(ethers.formatEther(amountIn))]);
+      losePoolMap.set(i, [bettor, Number(ethers.formatEther(amountIn)),Number(bet_direction)]);
       losePoolSize = losePoolSize + Number(ethers.formatEther(amountIn));
     };
   }
   // console.log({winPoolMap}, winPoolSize)
   // console.log({losePoolMap}, losePoolSize)
-  // Loop through winners and pay them out
-  for (let[betId, value] of winPoolMap){
-    const bettor = value[0]; const amountIn = value[1];
-    const amountOut = calculatePayout(amountIn, Number(totalPoolAmount), winPoolSize,losePoolSize);
-    const amountSend = ethers.parseEther(amountOut.toString());
-    console.log(`Bet ${betId} wins ${amountSend}`);
-    //await contract.claimBetPayout(bettor,betId, amountSend)
+  var allBetsMap = new Map([...winPoolMap,...losePoolMap])
+  // Loop through all bets
+  for (let[betId, value] of allBetsMap){
+    const bettor = value[0]; const amountIn = value[1]; const bet_direction = value[2];
+    // if the bet has won, then payout
+    let amountSend;
+    if (bet_direction == _betResult) {
+      const amountOut = calculatePayout(amountIn, Number(totalPoolAmount), winPoolSize,losePoolSize);
+      amountSend = ethers.parseEther(amountOut.toString());
+      //await contract.claimBetPayout(bettor,betId,amountSend)
+      console.log(`${bettor} with bet Id: ${betId} has won ${amountSend} WEI!!`)
+    } else {
+      amountSend = 0;
+    }
+    console.log(`UPDATING META DATA FOR BET:${betId}`);
+    await updateMetadataResult(betId, bet_direction, amountIn, _betResult, amountSend);
   }
 };
