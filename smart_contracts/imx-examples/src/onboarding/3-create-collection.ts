@@ -35,13 +35,13 @@ const component = '[IMX-CREATE-COLLECTION]';
    * Edit your values here
    */
   const params: CreateCollectionParams = {
-    name: 'Test Collection',
-    description: 'Test description',
+    name: 'OG Collection',
+    description: 'OG collection',
     contract_address: collectionContractAddress,
     owner_public_key: ownerPublicKey,
-    icon_url: 'https://picsum.photos/id/237/200/300',
-    metadata_api_url: 'https://gateway.pinata.cloud/ipfs/QmcENtXVYmEWEAKp3J7shVUnnedXbSHANwiJnJ8ojnuk61',
-    collection_image_url: 'https://picsum.photos/seed/picsum/200/300',
+    icon_url: 'https://gateway.pinata.cloud/ipfs/QmPu4H721j1KzJ1nRy1bhbL1tmtek12zbrx9nmRPpN2Gmd',
+    metadata_api_url: 'http://ec2-3-8-208-18.eu-west-2.compute.amazonaws.com',  // changed this to deployed server
+    collection_image_url: 'https://gateway.pinata.cloud/ipfs/QmWPLNnGCTv7EZ5e3Mvaxo97junpEp6pGUkpNWR5u5ejYW',
     project_id: parseInt(projectId, 10),
   };
 
