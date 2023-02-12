@@ -4,6 +4,8 @@ const bodyParser = require("body-parser");
 const PORT_NO = 9000;
 const app = express();
 const ethers = require("ethers");
+const axios = require("axios")
+
 require("dotenv").config();
 // contact address = 0x0BD807746807De32aC151c1D99ca9e0C7E9Ac402
 // get contract ABI
@@ -254,43 +256,80 @@ const contract = new ethers.Contract(contractAddress, contractAbi, wallet);
 app.use(bodyParser.json({ limit: "30mb", extended: true }));
 app.use(bodyParser.urlencoded({ limit: "30mb", extended: true }));
 app.use(cors());
-const baseURL=""
+const baseURL="ec2-3-8-208-18.eu-west-2.compute.amazonaws.com";
 
-app.get("/place-bet/:id", async (req, res) => {
+app.post("/place-bet/:id", async (req, res) => {
   const cid = req.path.split("/")[2]
   const url = baseURL+"/create-position/"+cid
+  console.log("URL---------------------------"+url)
   const body = req.body
-  const result = await axios.post(url, body);
+  try {
+    const result = await axios.post(url, body);
+  } catch (e) {
+    console.log(e)
+  }
   res.status(200).json(metaData);
   console.log(req.path);
 });
 
-// app.listen(PORT_NO, async (req, res) => {
-//   console.log("listenng");
+// app.get("/place-bet/:id", async (req, res) => {
+//   const cid = req.path.split("/")[2]
+//   const url = baseURL+"/create-position/"+cid
+//   const body = req.body
+//   const result = await axios.post(url, body);
+//   res.status(200).json(metaData);
+//   console.log(req.path);
 // });
+
+app.listen(PORT_NO, async (req, res) => {
+  setTimeout(testfunc,0)
+  console.log("listenng");
+});
+
+const testfunc = async () => {
+  console.log("Betting Period Over; Lets see the results!");
+  const bettedPrice = 1700;
+  const result = await apiResult(bettedPrice);
+  // call pay
+  await payoutBet(result.result);
+};
+
+const apiResult = async (_target) => {
+  const request = await axios.get("https://api.etherscan.io/api?module=stats&action=ethprice&apikey=HRAQIIHSR94XF7RRSTXQES91P3I9RSBIES")
+  const priceResult = Number(request.data.result.ethusd)
+  let betResult;
+  if (priceResult >= _target){
+    betResult = 1 // target price is met
+  } else {
+    betResult = 0
+  };
+  return {resultPrice: priceResult,
+    result: 1
+  };
+}
+
 const calculatePayout = (_bet, _totalPoolAmount, _winPoolSize, _losePoolSize) => {
   const betRatio = _bet/_winPoolSize;
-  console.log(`betRatio: ${betRatio}`)
   return (_bet + (betRatio*1*_losePoolSize))
 };
 
-const payoutBet = async (betResult) => {
+const payoutBet = async (_betResult) => {
   const betCount = await contract.betCount()
-  const totalPoolAmount = await contract.getBalance();
+  const totalPoolAmount = ethers.formatEther(await contract.getBalance());
   var winPoolMap = new Map(); var losePoolMap = new Map();
   var winPoolSize = 0; var losePoolSize = 0;
-  // console.log(`total pool amount: ${totalPoolAmount}`);
+  console.log(`total pool amount: ${totalPoolAmount}`);
   // loop through all bets and get relative pool results and size
   for (let i = 1; i < Number(betCount) +1; i++) {
     let { bettor, bet_direction, amountIn } = await contract.Bets(i);
      // console.log(`For bet ${i}: ${bettor}, ${bet_direction}, ${amountIn}`)
     // If win 
-    if (bet_direction == betResult) {
+    if (bet_direction == _betResult) {
       //append to win map
-      winPoolMap.set(i, [bettor,ethers.formatEther(amountIn)]);
+      winPoolMap.set(i, [bettor, Number(ethers.formatEther(amountIn))]);
       winPoolSize = winPoolSize + Number(ethers.formatEther(amountIn));
     } else {
-      losePoolMap.set(i, [bettor,ethers.formatEther(amountIn)]);
+      losePoolMap.set(i, [bettor, Number(ethers.formatEther(amountIn))]);
       losePoolSize = losePoolSize + Number(ethers.formatEther(amountIn));
     };
   }
@@ -298,11 +337,10 @@ const payoutBet = async (betResult) => {
   // console.log({losePoolMap}, losePoolSize)
   // Loop through winners and pay them out
   for (let[betId, value] of winPoolMap){
-    const bettor = value[0]; const amountIn = Number(value[1]);
+    const bettor = value[0]; const amountIn = value[1];
     const amountOut = calculatePayout(amountIn, Number(totalPoolAmount), winPoolSize,losePoolSize);
-    console.log(`Bet ${betId} wins ${amountOut}`);
-    await contract.claimBetPayout(bettor, betId, amountOut)
+    const amountSend = ethers.parseEther(amountOut.toString());
+    console.log(`Bet ${betId} wins ${amountSend}`);
+    //await contract.claimBetPayout(bettor,betId, amountSend)
   }
 };
-
-payoutBet(1);
