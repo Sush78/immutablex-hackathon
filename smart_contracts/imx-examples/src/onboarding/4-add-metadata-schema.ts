@@ -43,31 +43,24 @@ const component = '[IMX-ADD-COLLECTION-METADATA-SCHEMA]';
   const params: AddMetadataSchemaToCollectionParams = {
     metadata: [
       {
-        name :  'name' ,
-        type :  MetadataTypes.Text
+        name :  'betId' ,
+        type :  MetadataTypes.Discrete
       },
       {
-        name :  'description' ,
-        type :  MetadataTypes.Text  
+        name :  'betDirection' ,
+        type :  MetadataTypes.Discrete  
       },
       {
-        name :  'image_url' ,
-        type :  MetadataTypes.Text  
+        name :  'amountIn' ,
+        type :  MetadataTypes.Discrete  
       },
       {
-        name :  'attack' ,
+        name :  'result' ,
+        type :  MetadataTypes.Text,
+      },
+      {
+        name :  'amountOut' ,
         type :  MetadataTypes.Discrete,
-        filterable : true
-      },
-      {
-        name :  'collectable' ,
-        type :  MetadataTypes.Boolean,
-        filterable : true
-      },
-      {
-        name : 'class' ,
-        type :  MetadataTypes.Enum ,
-        filterable : true
       }
     ],
   };

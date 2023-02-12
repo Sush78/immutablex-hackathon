@@ -29,7 +29,7 @@ const component = '[IMX-CREATE-PROJECT]';
    * Edit your values here
    */
   const params: CreateProjectParams = {
-    name: 'Test-Project',
+    name: 'X-PULSE',
     company_name: 'Int labs',
     contact_email: 'sushantkumarsn50@gmail.com',
   };
