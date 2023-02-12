@@ -1,12 +1,14 @@
-import * as React from 'react';
+import React, {useContext} from 'react';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
+import { TransactionContext } from "../context/TransactionContext";
 
 export const Header = () => {
+  const { currentAccount, connectWallet } = useContext(TransactionContext);
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static">
@@ -22,7 +24,8 @@ export const Header = () => {
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
             XSomething
           </Typography>
-          <Button color="inherit">Connect Wallet</Button>
+          {!currentAccount && <Button color="inherit" onClick={connectWallet}>Connect Wallet</Button>}
+          {currentAccount && <p>{currentAccount}</p>}
         </Toolbar>
       </AppBar>
     </Box>
