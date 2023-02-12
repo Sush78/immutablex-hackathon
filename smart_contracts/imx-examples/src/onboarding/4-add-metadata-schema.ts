@@ -61,10 +61,6 @@ const component = '[IMX-ADD-COLLECTION-METADATA-SCHEMA]';
       {
         name :  'amountOut' ,
         type :  MetadataTypes.Discrete,
-      },
-      {
-        name : 'class' ,
-        type :  MetadataTypes.Enum ,
       }
     ],
   };

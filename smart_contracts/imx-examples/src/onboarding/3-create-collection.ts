@@ -35,8 +35,8 @@ const component = '[IMX-CREATE-COLLECTION]';
    * Edit your values here
    */
   const params: CreateCollectionParams = {
-    name: 'OG Collection',
-    description: 'OG collection',
+    name: 'XPulseBets',
+    description: 'XPulseBets Collection',
     contract_address: collectionContractAddress,
     owner_public_key: ownerPublicKey,
     icon_url: 'https://gateway.pinata.cloud/ipfs/QmPu4H721j1KzJ1nRy1bhbL1tmtek12zbrx9nmRPpN2Gmd',

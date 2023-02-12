@@ -6,7 +6,7 @@ import { TransactionContext } from "../context/TransactionContext";
 import { createNewbet } from '../service/api'
 
 export const Betting = () => {
-  const { sendBetTransaction, formData } = useContext(TransactionContext);
+  const { sendBetTransaction, formData, currentAccount } = useContext(TransactionContext);
   const [amountOut, setAmountOut] = useState(1.56)
   const [direction, setDirection] = useState(0)
   const [disabled, setDisabled] = useState(true)
@@ -30,8 +30,9 @@ export const Betting = () => {
   const placeBet = async() => {
     console.log(direction)
     sendBetTransaction()
-    const body = {"betId": 1, "betDirection": direction, "amountIn": formData['amountIn'], "result": "NA", "amountOut": 0}
-    const params = {body, cid: 4}
+    const betId = 3
+    const body = {"betId": betId, "betDirection": direction, "amountIn": formData['amountIn'], "result": "NA", "amountOut": 0, "userAddress": currentAccount}
+    const params = {body, cid: betId}
     const data = await createNewbet(params)
   }
   return (
