@@ -13,3 +13,6 @@ IMX’s ability to enable gas-free NFT minting allows us to foster user particip
 
 # Technical description
 Our smart contract (prediction pool) governs the logic for prediction our pool and is deployed on Goerli Layer 1 (governs the logic for placing predictions, and paying out winners as well as revenue flows), while our NFT smartcontract (which is minted from the backend when the user makes a bet) is deployed on L2 IMX (using ImmutableX sdk, called from our node backend). IMX is crucial for our NFT smart contract deployments as it allows for us to integrate dynamic NFTs as well as low minting fee (which is important for scalability of the potential of number of bets on a given pool). The dynamic gas-less NFTs enables our prediction positions, and hence stays as a core functionality of our application for future application in a secondary market where users coul…
+
+# Architecture 
+file:///home/steve/Downloads/Quick%20sheets%20-%20page%20388.png![image](https://user-images.githubusercontent.com/71383573/218309984-11611deb-a09c-4dfd-a2d3-0aa93b8d1cb7.png)
