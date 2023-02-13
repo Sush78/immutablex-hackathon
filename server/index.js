@@ -370,7 +370,7 @@ app.listen(PORT_NO, async (req, res) => {
   console.log("listenng");
 //   const sign = await signRaw(message, ethSigner)
 //   console.log(sign)
-  setTimeout(testfunc,2000 * 20)
+  setTimeout(testfunc,1000 * 5 * 60)
 });
 
 const testfunc = async () => {
@@ -445,7 +445,7 @@ const updateMetadataResult = async (_betId, _bet_direction, _amountIn, _result, 
       if (bet_direction == _betResult) {
         const amountOut = calculatePayout(amountIn, Number(totalPoolAmount), winPoolSize,losePoolSize);
         amountSend = ethers.parseEther(amountOut.toString());
-        //await contract.claimBetPayout(bettor,betId,amountSend)
+        await contract.claimBetPayout(bettor,betId,amountSend)
         console.log(`${bettor} with bet Id: ${betId} has won ${amountSend} WEI!!`)
       } else {
         amountSend = 0;

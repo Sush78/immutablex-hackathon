@@ -27,6 +27,7 @@ export const TableView = () => {
               <TableRow>
                 <TableCell>User Name</TableCell>
                 <TableCell align="right">Bets</TableCell>
+                <TableCell align="right">Rank</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
