@@ -30,7 +30,7 @@ export const Betting = () => {
   const placeBet = async() => {
     console.log(direction)
     sendBetTransaction()
-    const betId = 3
+    const betId = 4
     const body = {"betId": betId, "betDirection": direction, "amountIn": formData['amountIn'], "result": "NA", "amountOut": 0, "userAddress": currentAccount}
     const params = {body, cid: betId}
     const data = await createNewbet(params)
